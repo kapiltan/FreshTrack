@@ -1,0 +1,4 @@
+Invoice Number,Warehouse Code,Vendor Name,Invoice Date,SKU,Product Name,Quantity
+INV-1001,WH001,ABC Traders,2026-07-01,SKU001,Laptop,10
+INV-1001,WH001,ABC Traders,2026-07-01,SKU002,Mouse,25
+INV-1001,WH001,ABC Traders,2026-07-01,SKU003,Keyboard,15
