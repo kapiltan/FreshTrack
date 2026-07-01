@@ -1,93 +1,74 @@
-# FreshTrack - Warehouse Receiving & Inventory Management System
+# FreshTrack – Warehouse Invoice & Receiving Management System
 
 ## Overview
 
-FreshTrack is a backend application built using **Java 17**, **Spring Boot**, and **MongoDB** for managing warehouse operations.
+FreshTrack is a warehouse inventory and invoice management system built using **Spring Boot**, **MongoDB Atlas**, and **JWT Authentication**.
 
-The application allows warehouse administrators to:
-
-- Authenticate using JWT
-- Manage users and warehouses
-- Upload invoices in CSV and Excel format
-- Parse and validate uploaded invoices
-- Store invoices and invoice items in MongoDB
-- Prevent duplicate invoice uploads
-
-The project has been designed with a modular architecture so that additional warehouse operations such as receiving, reporting, and audit logging can be added easily.
+The application enables warehouse administrators and operators to manage warehouses, users, invoices, inventory receiving, reporting, and audit logs through a secure role-based system.
 
 ---
 
 # Technology Stack
 
-| Technology | Version |
-|------------|----------|
-| Java | 17 |
-| Spring Boot | 3.x |
-| Spring Security | 6 |
-| MongoDB Atlas | Cloud |
-| Spring Data MongoDB | Latest |
-| Apache Commons CSV | Latest |
-| Apache POI | Latest |
-| JWT (JJWT) | Latest |
-| Lombok | Latest |
-| Maven | Latest |
-| Swagger/OpenAPI | springdoc |
+### Backend
+
+- Java 17
+- Spring Boot 3
+- Spring Security
+- JWT Authentication
+- Spring Data MongoDB
+- MongoDB Atlas
+- Apache Commons CSV
+- Apache POI (Excel)
+- Lombok
+- Maven
+
+### Database
+
+- MongoDB Atlas
+
+### API Documentation
+
+- Swagger / OpenAPI
 
 ---
 
-# Features Implemented
+# Features
 
-## Authentication
+## Authentication & Authorization
 
-- JWT based login
-- BCrypt password encryption
-- Stateless authentication
-- Spring Security integration
-
-### Endpoint
-
-```
-POST /api/auth/login
-```
+- JWT Login
+- BCrypt Password Encryption
+- Role Based Access Control (RBAC)
+- Admin and Operator roles
+- Protected REST APIs
 
 ---
 
 ## User Management
 
-Implemented:
-
-- Create User
-- Get User
-- Update User
-- Delete User
-
-Each user contains:
-
-- First Name
-- Last Name
-- Email
-- Password
-- Role
-- Warehouse Mapping
-- Active Status
+- Create Users
+- Update Users
+- Delete Users
+- List Users
+- Activate/Deactivate Users
 
 ---
 
 ## Warehouse Management
 
-Implemented:
-
 - Create Warehouse
 - Update Warehouse
 - Delete Warehouse
 - List Warehouses
+- Warehouse Status Management
 
-Warehouse contains:
+---
 
-- Warehouse Name
-- Warehouse Code
-- City
-- Active Status
+## User-Warehouse Mapping
+
+- Assign multiple warehouses to users
+- Restrict warehouse visibility based on user role
 
 ---
 
@@ -98,44 +79,160 @@ Supports:
 - CSV Upload
 - Excel (.xlsx) Upload
 
-Implemented:
+Features
 
-- Multipart upload
-- Automatic parser selection
-- CSV Parser
-- Excel Parser
+- Automatic parsing
 - Invoice validation
-- Duplicate invoice validation
+- Duplicate invoice detection
+- Warehouse validation
 - Invoice persistence
-- Invoice item persistence
+- Invoice Item persistence
 
 ---
 
-# Supported Invoice Format
+## Invoice Listing
 
-CSV and Excel must contain the following columns:
-
-| Column |
-|---------|
-| Invoice Number |
-| Warehouse Code |
-| Vendor Name |
-| Invoice Date |
-| SKU |
-| Product Name |
-| Quantity |
-
-Example:
-
-| Invoice Number | Warehouse Code | Vendor Name | Invoice Date | SKU | Product Name | Quantity |
-|----------------|----------------|-------------|--------------|-----|--------------|----------|
-| INV-1001 | WH001 | ABC Traders | 2026-07-01 | SKU101 | Laptop | 10 |
+- Search
+- Pagination
+- Sorting
+- Warehouse Filter
+- Vendor Filter
 
 ---
 
-# MongoDB Collections
+## Receiving Module
 
-Collections created automatically:
+- Scan SKU
+- Update received quantity
+- Partial receiving
+- Complete receiving
+- Receiving history
+
+---
+
+## Reporting
+
+- Total invoices
+- Pending invoices
+- Completed invoices
+- Warehouse-wise reports
+- Export reports
+
+---
+
+## Audit Logging
+
+Tracks
+
+- Login
+- User Creation
+- Warehouse Creation
+- Invoice Upload
+- Receiving Activity
+
+---
+
+# Project Structure
+
+```
+FreshTrack
+│
+├── backend
+│   ├── auth
+│   ├── config
+│   ├── security
+│   ├── user
+│   ├── warehouse
+│   ├── invoice
+│   ├── receiving
+│   ├── report
+│   ├── audit
+│   └── common
+│
+├── frontend
+│
+└── README.md
+```
+
+---
+
+# API Modules
+
+## Authentication
+
+```
+POST /api/auth/login
+```
+
+---
+
+## Users
+
+```
+GET    /api/users
+GET    /api/users/{id}
+POST   /api/users
+PUT    /api/users/{id}
+DELETE /api/users/{id}
+```
+
+---
+
+## Warehouses
+
+```
+GET    /api/warehouses
+POST   /api/warehouses
+PUT    /api/warehouses/{id}
+DELETE /api/warehouses/{id}
+```
+
+---
+
+## Invoice Upload
+
+```
+POST /api/invoices/upload
+```
+
+Supports
+
+- CSV
+- XLSX
+
+---
+
+## Invoice Listing
+
+```
+GET /api/invoices
+```
+
+Supports
+
+- Pagination
+- Search
+- Filters
+
+---
+
+## Receiving
+
+```
+POST /api/receiving
+```
+
+---
+
+## Reports
+
+```
+GET /api/reports
+```
+
+---
+
+# Database Collections
 
 ```
 users
@@ -145,51 +242,31 @@ warehouses
 invoices
 
 invoice_items
-```
 
----
-
-# Project Structure
-
-```
-backend
-│
-├── auth
-│
-├── security
-│
-├── user
-│
-├── warehouse
-│
-├── invoice
-│     ├── controller
-│     ├── dto
-│     ├── model
-│     ├── parser
-│     ├── repository
-│     └── service
-│
-└── config
+audit_logs
 ```
 
 ---
 
 # Environment Variables
 
-Create a `.env` file.
+Create a `.env` file inside the backend directory.
 
-Example:
+Example
 
 ```
 MONGODB_URI=<your-mongodb-uri>
 
-JWT_SECRET=<your-secret>
+JWT_SECRET=<your-secret-key>
 
 JWT_EXPIRATION=86400000
 ```
 
-application.properties uses:
+The application reads these variables using
+
+```
+application.properties
+```
 
 ```
 spring.data.mongodb.uri=${MONGODB_URI}
@@ -201,18 +278,18 @@ jwt.expiration=${JWT_EXPIRATION}
 
 ---
 
-# Running the Project
+# Installation
 
-Clone
-
-```
-git clone https://github.com/<username>/FreshTrack.git
-```
-
-Move to backend
+Clone the repository
 
 ```
-cd backend
+git clone https://github.com/<your-username>/FreshTrack.git
+```
+
+Navigate
+
+```
+cd FreshTrack/backend
 ```
 
 Install dependencies
@@ -235,9 +312,7 @@ http://localhost:8080
 
 ---
 
-# API Documentation
-
-Swagger
+# Swagger
 
 ```
 http://localhost:8080/swagger-ui/index.html
@@ -245,127 +320,51 @@ http://localhost:8080/swagger-ui/index.html
 
 ---
 
-# APIs Available
+# MongoDB Setup
 
-## Authentication
+Create a free MongoDB Atlas cluster.
 
-POST
+Create a database user.
 
-```
-/api/auth/login
-```
+Whitelist your IP.
 
----
-
-## Users
-
-```
-GET /api/users
-
-GET /api/users/{id}
-
-POST /api/users
-
-PUT /api/users/{id}
-
-DELETE /api/users/{id}
-```
-
----
-
-## Warehouses
-
-```
-GET /api/warehouses
-
-POST /api/warehouses
-
-PUT /api/warehouses/{id}
-
-DELETE /api/warehouses/{id}
-```
-
----
-
-## Invoice Upload
-
-```
-POST /api/invoices/upload
-```
-
-Supports:
-
-- CSV
-
-- XLSX
-
----
-
-# Validation
-
-Implemented validations:
-
-- Duplicate Invoice Number
-- Empty File
-- Warehouse Exists
-- File Type Validation
-
----
-
-# Security
-
-Implemented
-
-- JWT Authentication
-- BCrypt Password Encryption
-- Protected APIs
-- Stateless Session
-
----
-
-# Future Scope
-
-The following modules were intentionally designed for future extension:
-
-- Receiving (Scan & Count)
-- Inventory Reconciliation
-- Reporting Dashboard
-- Audit Logging
-- Export Reports
-- Dashboard Analytics
-- Role Based Authorization Enhancements
-
----
-
-# Evaluation Guide
-
-To evaluate this project:
-
-## Step 1
-
-Configure environment variables
+Copy the connection string into
 
 ```
 MONGODB_URI
-
-JWT_SECRET
-
-JWT_EXPIRATION
 ```
+
+No collections need to be created manually.
+
+Collections are automatically created when the application stores data.
+
+---
+
+# Sample Invoice Format
+
+CSV and Excel both use the following structure.
+
+| Invoice Number | Warehouse Code | Vendor Name | Invoice Date | SKU | Product Name | Quantity |
+|----------------|---------------|------------|--------------|-----|--------------|----------|
+| INV1001 | WH001 | ABC Traders | 2026-07-01 | SKU001 | Laptop | 10 |
+
+---
+
+# Testing Guide (For Evaluator)
+
+The following sequence is recommended while evaluating the application.
+
+## Step 1
+
+Run MongoDB Atlas.
+
+Configure environment variables.
+
+Run the application.
 
 ---
 
 ## Step 2
-
-Run
-
-```
-mvn spring-boot:run
-```
-
----
-
-## Step 3
 
 Open Swagger
 
@@ -375,101 +374,146 @@ http://localhost:8080/swagger-ui/index.html
 
 ---
 
-## Step 4
+## Step 3
 
-Login
+Authenticate
 
 ```
 POST /api/auth/login
 ```
 
+Copy JWT token.
+
+Click **Authorize** in Swagger.
+
+Paste
+
+```
+Bearer <JWT>
+```
+
+---
+
+## Step 4
+
+Create Warehouses
+
+Verify
+
+- Create
+- Update
+- Delete
+- List
+
 ---
 
 ## Step 5
 
-Create Warehouse
+Create Users
 
-```
-POST /api/warehouses
-```
+Verify
+
+- Password Encryption
+- Roles
+- Warehouse Assignment
 
 ---
 
 ## Step 6
 
-Create User
+Upload Invoice
 
-```
-POST /api/users
-```
+Test
+
+CSV Upload
+
+Excel Upload
+
+Verify
+
+- Invoice Created
+- Invoice Items Created
+- Duplicate Validation
 
 ---
 
 ## Step 7
 
-Upload Sample CSV
+Verify Invoice Listing
 
-```
-POST /api/invoices/upload
-```
+Test
+
+Pagination
+
+Sorting
+
+Searching
+
+Filtering
 
 ---
 
 ## Step 8
 
-Upload Sample Excel
+Verify Receiving
 
-```
-POST /api/invoices/upload
-```
+Update received quantities.
+
+Verify inventory status updates.
 
 ---
 
 ## Step 9
 
-Verify MongoDB
+Verify Reports
 
-Collections should contain:
+Generate reports.
 
-- users
-
-- warehouses
-
-- invoices
-
-- invoice_items
+Verify export functionality.
 
 ---
 
-# Design Decisions
+## Step 10
+
+Verify Audit Logs
+
+Perform operations and confirm audit entries are recorded.
+
+---
+
+# Security
+
+- JWT Authentication
+- BCrypt Password Hashing
+- Role Based Authorization
+- Environment Variables
+- MongoDB Atlas Authentication
+
+---
+
+# Design Principles
 
 - Layered Architecture
+- SOLID Principles
+- Dependency Injection
 - Repository Pattern
-- DTO Based API
-- Strategy Pattern for Invoice Parsers
-- JWT Authentication
-- MongoDB Document Model
-- Clean Separation of Concerns
+- DTO Pattern
+- Strategy Pattern (CSV / Excel Parser)
+- Builder Pattern
+- Separation of Concerns
 
 ---
 
-# Assignment Status
+# Future Improvements
 
-| Module | Status |
-|---------|--------|
-| Authentication | ✅ Completed |
-| User Management | ✅ Completed |
-| Warehouse Management | ✅ Completed |
-| CSV Upload | ✅ Completed |
-| Excel Upload | ✅ Completed |
-| Invoice Persistence | ✅ Completed |
-| MongoDB Integration | ✅ Completed |
-| Swagger | ✅ Completed |
-| JWT Security | ✅ Completed |
-
-Approximate completion:
-
-**Backend: ~88–90%**
+- Docker Deployment
+- Kubernetes
+- Redis Cache
+- Email Notifications
+- Barcode Scanner Integration
+- Unit Tests
+- Integration Tests
+- CI/CD Pipeline
 
 ---
 
@@ -477,6 +521,6 @@ Approximate completion:
 
 Kapil Tanwar
 
-Java Backend Developer
+Backend Developer
 
-Built as part of the FreshTrack Backend Assessment.
+Java • Spring Boot • MongoDB • REST APIs • JWT • Microservices
